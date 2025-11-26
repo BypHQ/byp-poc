@@ -29,7 +29,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Schema
 
-The app uses Prisma with PostgreSQL (Supabase). See `prisma/schema.prisma` for the full schema.
+The app connects to a PostgreSQL database (Supabase) with the following schema structure:
 
 ### Source Model
 - `id` (string, UUID, primary key)
