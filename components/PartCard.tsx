@@ -66,9 +66,9 @@ export default function PartCard({ part }: PartCardProps) {
             <p className="text-xs text-gray-500 mb-2">
               Source: <span className="font-medium">{part.source.name}</span>
             </p>
-            {part.source.baseUrl && (
+            {part.partUrl && (
               <a
-                href={part.source.baseUrl}
+                href={part.partUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}

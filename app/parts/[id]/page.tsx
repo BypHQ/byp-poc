@@ -103,9 +103,9 @@ export default async function PartDetailPage({
               <div className="pt-6 border-t border-gray-200">
                 <p className="text-sm font-medium text-gray-700 mb-2">Source</p>
                 <p className="text-gray-900 mb-4">{part.source.name}</p>
-                {part.source.baseUrl && (
+                {part.partUrl && (
                   <a
-                    href={part.source.baseUrl}
+                    href={part.partUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

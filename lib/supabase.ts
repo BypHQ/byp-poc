@@ -30,6 +30,7 @@ export interface Part {
   currency: string
   condition: string | null
   imageUrl: string | null
+  partUrl: string | null
   vehicleMake: string | null
   vehicleModel: string | null
   vehicleModelCode: string | null
