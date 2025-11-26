@@ -1,6 +1,24 @@
-import Link from 'next/link'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import Button from '@/components/Button'
 
 export default function Home() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [loading, setLoading] = useState(false)
+
+  // Reset loading state when navigation completes
+  useEffect(() => {
+    setLoading(false)
+  }, [pathname])
+
+  const handleNavigate = () => {
+    setLoading(true)
+    router.push('/parts')
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div className="text-center">
@@ -12,12 +30,13 @@ export default function Home() {
         </p>
         <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
           <div className="rounded-md shadow">
-            <Link
-              href="/parts"
-              className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
+            <Button
+              onClick={handleNavigate}
+              loading={loading}
+              className="w-full"
             >
               Browse Parts
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

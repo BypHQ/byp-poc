@@ -1,5 +1,6 @@
 import { supabase, type Part } from '@/lib/supabase'
 import PartCard from '@/components/PartCard'
+import FilterForm from '@/components/FilterForm'
 import { Suspense } from 'react'
 
 interface PartsPageProps {
@@ -130,89 +131,12 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Browse Parts</h1>
         
-        <form method="get" className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <div>
-              <label htmlFor="q" className="block text-sm font-medium text-gray-700 mb-1">
-                Search
-              </label>
-              <input
-                type="text"
-                id="q"
-                name="q"
-                defaultValue={params.q}
-                placeholder="Search parts..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="make" className="block text-sm font-medium text-gray-700 mb-1">
-                Make
-              </label>
-              <select
-                id="make"
-                name="make"
-                defaultValue={params.make}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">All Makes</option>
-                {makes.map((make) => (
-                  <option key={make} value={make}>
-                    {make}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">
-                Model
-              </label>
-              <select
-                id="model"
-                name="model"
-                defaultValue={params.model}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">All Models</option>
-                {models.map((model) => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="source" className="block text-sm font-medium text-gray-700 mb-1">
-                Source
-              </label>
-              <select
-                id="source"
-                name="source"
-                defaultValue={params.source}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="">All Sources</option>
-                {sources.map((source) => (
-                  <option key={source.id} value={source.id}>
-                    {source.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex items-end">
-              <button
-                type="submit"
-                className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Filter
-              </button>
-            </div>
-          </div>
-        </form>
+        <FilterForm
+          makes={makes}
+          models={models}
+          sources={sources}
+          initialFilters={params}
+        />
       </div>
 
       <div className="mb-4">

@@ -1,8 +1,10 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import type { Part } from '@/lib/supabase'
+import LoadingSpinner from './LoadingSpinner'
 
 interface PartCardProps {
   part: Part
@@ -10,6 +12,13 @@ interface PartCardProps {
 
 export default function PartCard({ part }: PartCardProps) {
   const router = useRouter()
+  const pathname = usePathname()
+  const [loading, setLoading] = useState(false)
+  
+  // Reset loading state when navigation completes
+  useEffect(() => {
+    setLoading(false)
+  }, [pathname])
   
   const makeModelYear = [
     part.vehicleMake,
@@ -24,11 +33,21 @@ export default function PartCard({ part }: PartCardProps) {
   // Normalize image URL to fix double slashes
   const normalizedImageUrl = part.imageUrl?.replace(/([^:]\/)\/+/g, '$1')
 
+  const handleClick = () => {
+    setLoading(true)
+    router.push(`/parts/${part.id}`)
+  }
+
   return (
     <div 
-      onClick={() => router.push(`/parts/${part.id}`)}
-      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+      onClick={handleClick}
+      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer relative"
     >
+      {loading && (
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+          <LoadingSpinner size="md" />
+        </div>
+      )}
         {normalizedImageUrl && (
           <div className="relative w-full h-48 bg-gray-100">
             <Image

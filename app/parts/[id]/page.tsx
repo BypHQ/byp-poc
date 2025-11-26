@@ -2,6 +2,7 @@ import { supabase, type Part } from '@/lib/supabase'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import Button from '@/components/Button'
 
 async function getPart(id: string): Promise<Part | null> {
   const { data, error } = await supabase
@@ -104,14 +105,14 @@ export default async function PartDetailPage({
                 <p className="text-sm font-medium text-gray-700 mb-2">Source</p>
                 <p className="text-gray-900 mb-4">{part.source.name}</p>
                 {part.partUrl && (
-                  <a
+                  <Button
                     href={part.partUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    variant="secondary"
                   >
                     View on wrecker site →
-                  </a>
+                  </Button>
                 )}
               </div>
             )}
