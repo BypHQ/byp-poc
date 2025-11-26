@@ -3,14 +3,15 @@ import PartCard from '@/components/PartCard'
 import { Suspense } from 'react'
 
 interface PartsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     make?: string
     model?: string
+    source?: string
     q?: string
-  }
+  }>
 }
 
-async function getParts(filters: { make?: string; model?: string; q?: string }) {
+async function getParts(filters: { make?: string; model?: string; source?: string; q?: string }) {
   let query = supabase
     .from('Part')
     .select(`
@@ -28,6 +29,10 @@ async function getParts(filters: { make?: string; model?: string; q?: string }) 
 
   if (filters.model) {
     query = query.eq('vehicleModel', filters.model)
+  }
+
+  if (filters.source) {
+    query = query.eq('sourceId', filters.source)
   }
 
   if (filters.q) {
@@ -81,6 +86,20 @@ async function getModels(make?: string) {
   return models.sort() as string[]
 }
 
+async function getSources() {
+  const { data, error } = await supabase
+    .from('Source')
+    .select('id, name')
+    .order('name')
+
+  if (error) {
+    console.error('Error fetching sources:', error)
+    return []
+  }
+
+  return (data || []) as Array<{ id: string; name: string }>
+}
+
 function PartsList({ parts }: { parts: Part[] }) {
   if (parts.length === 0) {
     return (
@@ -100,9 +119,11 @@ function PartsList({ parts }: { parts: Part[] }) {
 }
 
 export default async function PartsPage({ searchParams }: PartsPageProps) {
-  const parts = await getParts(searchParams)
+  const params = await searchParams
+  const parts = await getParts(params)
   const makes = await getMakes()
-  const models = await getModels(searchParams.make)
+  const models = await getModels(params.make)
+  const sources = await getSources()
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -110,7 +131,7 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Browse Parts</h1>
         
         <form method="get" className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div>
               <label htmlFor="q" className="block text-sm font-medium text-gray-700 mb-1">
                 Search
@@ -119,7 +140,7 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
                 type="text"
                 id="q"
                 name="q"
-                defaultValue={searchParams.q}
+                defaultValue={params.q}
                 placeholder="Search parts..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
@@ -132,7 +153,7 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
               <select
                 id="make"
                 name="make"
-                defaultValue={searchParams.make}
+                defaultValue={params.make}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">All Makes</option>
@@ -151,13 +172,32 @@ export default async function PartsPage({ searchParams }: PartsPageProps) {
               <select
                 id="model"
                 name="model"
-                defaultValue={searchParams.model}
+                defaultValue={params.model}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">All Models</option>
                 {models.map((model) => (
                   <option key={model} value={model}>
                     {model}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="source" className="block text-sm font-medium text-gray-700 mb-1">
+                Source
+              </label>
+              <select
+                id="source"
+                name="source"
+                defaultValue={params.source}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">All Sources</option>
+                {sources.map((source) => (
+                  <option key={source.id} value={source.id}>
+                    {source.name}
                   </option>
                 ))}
               </select>

@@ -28,9 +28,10 @@ async function getPart(id: string): Promise<Part | null> {
 export default async function PartDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
-  const part = await getPart(params.id)
+  const { id } = await params
+  const part = await getPart(id)
 
   if (!part) {
     notFound()
@@ -60,7 +61,7 @@ export default async function PartDetailPage({
           {part.imageUrl && (
             <div className="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
               <Image
-                src={part.imageUrl}
+                src={part.imageUrl.replace(/([^:]\/)\/+/g, '$1')}
                 alt={part.title}
                 fill
                 className="object-cover"

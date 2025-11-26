@@ -1,5 +1,7 @@
+'use client'
+
 import Image from 'next/image'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { Part } from '@/lib/supabase'
 
 interface PartCardProps {
@@ -7,6 +9,8 @@ interface PartCardProps {
 }
 
 export default function PartCard({ part }: PartCardProps) {
+  const router = useRouter()
+  
   const makeModelYear = [
     part.vehicleMake,
     part.vehicleModel,
@@ -17,13 +21,18 @@ export default function PartCard({ part }: PartCardProps) {
     .filter(Boolean)
     .join(' ')
 
+  // Normalize image URL to fix double slashes
+  const normalizedImageUrl = part.imageUrl?.replace(/([^:]\/)\/+/g, '$1')
+
   return (
-    <Link href={`/parts/${part.id}`}>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-        {part.imageUrl && (
+    <div 
+      onClick={() => router.push(`/parts/${part.id}`)}
+      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+    >
+        {normalizedImageUrl && (
           <div className="relative w-full h-48 bg-gray-100">
             <Image
-              src={part.imageUrl}
+              src={normalizedImageUrl}
               alt={part.title}
               fill
               className="object-cover"
@@ -62,6 +71,7 @@ export default function PartCard({ part }: PartCardProps) {
                 href={part.source.baseUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
                 className="text-sm text-indigo-600 hover:text-indigo-700 font-medium inline-flex items-center"
               >
                 View on wrecker site →
@@ -71,7 +81,6 @@ export default function PartCard({ part }: PartCardProps) {
         )}
       </div>
     </div>
-    </Link>
   )
 }
 
