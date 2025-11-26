@@ -9,24 +9,41 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Types
+// Types - matching Prisma schema
 export interface Source {
   id: string
   name: string
-  baseUrl: string
+  baseUrl: string | null
+  scraperVersion: string | null
+  lastScrapedAt: Date | null
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Part {
   id: string
+  sourceId: string
+  sourcePartKey: string
   title: string
   description: string | null
-  image: string | null
-  make: string | null
-  model: string | null
-  year: number | null
   price: number | null
-  location: string | null
-  sourceId: string
+  currency: string
+  condition: string | null
+  imageUrl: string | null
+  vehicleMake: string | null
+  vehicleModel: string | null
+  vehicleModelCode: string | null
+  yearFrom: number | null
+  yearTo: number | null
+  category: string | null
+  partName: string | null
+  locationSuburb: string | null
+  locationState: string | null
+  rawData: any | null
+  isInStock: boolean
+  lastSeenAt: Date
+  createdAt: Date
+  updatedAt: Date
   source?: Source
 }
 

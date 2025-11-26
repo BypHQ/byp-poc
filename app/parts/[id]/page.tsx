@@ -36,7 +36,13 @@ export default async function PartDetailPage({
     notFound()
   }
 
-  const makeModelYear = [part.make, part.model, part.year]
+  const makeModelYear = [
+    part.vehicleMake,
+    part.vehicleModel,
+    part.yearFrom && part.yearTo
+      ? `${part.yearFrom}-${part.yearTo}`
+      : part.yearFrom || part.yearTo
+  ]
     .filter(Boolean)
     .join(' ')
 
@@ -51,10 +57,10 @@ export default async function PartDetailPage({
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-          {part.image && (
+          {part.imageUrl && (
             <div className="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
               <Image
-                src={part.image}
+                src={part.imageUrl}
                 alt={part.title}
                 fill
                 className="object-cover"
@@ -72,14 +78,16 @@ export default async function PartDetailPage({
 
             {part.price !== null && (
               <p className="text-3xl font-bold text-indigo-600 mb-6">
-                ${part.price.toLocaleString()}
+                {part.currency} ${part.price.toLocaleString()}
               </p>
             )}
 
-            {part.location && (
+            {(part.locationSuburb || part.locationState) && (
               <div className="mb-6">
                 <p className="text-sm font-medium text-gray-700 mb-1">Location</p>
-                <p className="text-gray-900">📍 {part.location}</p>
+                <p className="text-gray-900">
+                  📍 {[part.locationSuburb, part.locationState].filter(Boolean).join(', ')}
+                </p>
               </div>
             )}
 

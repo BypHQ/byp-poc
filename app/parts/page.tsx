@@ -23,11 +23,11 @@ async function getParts(filters: { make?: string; model?: string; q?: string }) 
     `)
 
   if (filters.make) {
-    query = query.eq('make', filters.make)
+    query = query.eq('vehicleMake', filters.make)
   }
 
   if (filters.model) {
-    query = query.eq('model', filters.model)
+    query = query.eq('vehicleModel', filters.model)
   }
 
   if (filters.q) {
@@ -48,26 +48,26 @@ async function getParts(filters: { make?: string; model?: string; q?: string }) 
 async function getMakes() {
   const { data, error } = await supabase
     .from('Part')
-    .select('make')
-    .not('make', 'is', null)
+    .select('vehicleMake')
+    .not('vehicleMake', 'is', null)
 
   if (error) {
     console.error('Error fetching makes:', error)
     return []
   }
 
-  const makes = Array.from(new Set(data.map((item) => item.make).filter(Boolean)))
+  const makes = Array.from(new Set(data.map((item) => item.vehicleMake).filter(Boolean)))
   return makes.sort() as string[]
 }
 
 async function getModels(make?: string) {
   let query = supabase
     .from('Part')
-    .select('model')
-    .not('model', 'is', null)
+    .select('vehicleModel')
+    .not('vehicleModel', 'is', null)
 
   if (make) {
-    query = query.eq('make', make)
+    query = query.eq('vehicleMake', make)
   }
 
   const { data, error } = await query
@@ -77,7 +77,7 @@ async function getModels(make?: string) {
     return []
   }
 
-  const models = Array.from(new Set(data.map((item) => item.model).filter(Boolean)))
+  const models = Array.from(new Set(data.map((item) => item.vehicleModel).filter(Boolean)))
   return models.sort() as string[]
 }
 

@@ -29,33 +29,54 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Database Schema
 
-The app expects the following Supabase tables:
+The app uses Prisma with PostgreSQL (Supabase). See `prisma/schema.prisma` for the full schema.
 
-- **Part** table with columns:
-  - `id` (string)
-  - `title` (string)
-  - `description` (string, nullable)
-  - `image` (string, nullable)
-  - `make` (string, nullable)
-  - `model` (string, nullable)
-  - `year` (number, nullable)
-  - `price` (number, nullable)
-  - `location` (string, nullable)
-  - `sourceId` (string, foreign key to Source.id)
-  - `created_at` (timestamp)
+### Source Model
+- `id` (string, UUID, primary key)
+- `name` (string, unique)
+- `baseUrl` (string, nullable)
+- `scraperVersion` (string, nullable)
+- `lastScrapedAt` (DateTime, nullable)
+- `createdAt` (DateTime)
+- `updatedAt` (DateTime)
 
-- **Source** table with columns:
-  - `id` (string)
-  - `name` (string)
-  - `baseUrl` (string)
+### Part Model
+- `id` (string, UUID, primary key)
+- `sourceId` (string, foreign key to Source.id)
+- `sourcePartKey` (string)
+- `title` (string)
+- `description` (string, nullable)
+- `price` (float, nullable)
+- `currency` (string, default: "AUD")
+- `condition` (string, nullable)
+- `imageUrl` (string, nullable)
+- `vehicleMake` (string, nullable)
+- `vehicleModel` (string, nullable)
+- `vehicleModelCode` (string, nullable)
+- `yearFrom` (int, nullable)
+- `yearTo` (int, nullable)
+- `category` (string, nullable)
+- `partName` (string, nullable)
+- `locationSuburb` (string, nullable)
+- `locationState` (string, nullable)
+- `rawData` (JSON, nullable)
+- `isInStock` (boolean, default: true)
+- `lastSeenAt` (DateTime)
+- `createdAt` (DateTime)
+- `updatedAt` (DateTime)
+
+**Indexes:**
+- Unique constraint on `[sourceId, sourcePartKey]`
+- Index on `[sourceId, isInStock]`
+- Index on `[sourceId, lastSeenAt]`
 
 ## Features
 
 - **Landing Page** (`/`) - Simple welcome page
 - **Parts List** (`/parts`) - Browse all parts with filters:
   - Search by title/description (`q` parameter)
-  - Filter by make (`make` parameter)
-  - Filter by model (`model` parameter)
+  - Filter by vehicle make (`make` parameter)
+  - Filter by vehicle model (`model` parameter)
 - **Part Detail** (`/parts/[id]`) - View detailed information about a specific part
 
 ## Tech Stack

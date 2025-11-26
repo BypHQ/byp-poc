@@ -7,17 +7,23 @@ interface PartCardProps {
 }
 
 export default function PartCard({ part }: PartCardProps) {
-  const makeModelYear = [part.make, part.model, part.year]
+  const makeModelYear = [
+    part.vehicleMake,
+    part.vehicleModel,
+    part.yearFrom && part.yearTo
+      ? `${part.yearFrom}-${part.yearTo}`
+      : part.yearFrom || part.yearTo
+  ]
     .filter(Boolean)
     .join(' ')
 
   return (
     <Link href={`/parts/${part.id}`}>
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-        {part.image && (
+        {part.imageUrl && (
           <div className="relative w-full h-48 bg-gray-100">
             <Image
-              src={part.image}
+              src={part.imageUrl}
               alt={part.title}
               fill
               className="object-cover"
@@ -36,12 +42,14 @@ export default function PartCard({ part }: PartCardProps) {
 
         {part.price !== null && (
           <p className="text-xl font-bold text-indigo-600 mb-2">
-            ${part.price.toLocaleString()}
+            {part.currency} ${part.price.toLocaleString()}
           </p>
         )}
 
-        {part.location && (
-          <p className="text-sm text-gray-500 mb-2">📍 {part.location}</p>
+        {(part.locationSuburb || part.locationState) && (
+          <p className="text-sm text-gray-500 mb-2">
+            📍 {[part.locationSuburb, part.locationState].filter(Boolean).join(', ')}
+          </p>
         )}
 
         {part.source && (
